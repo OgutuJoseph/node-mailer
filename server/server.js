@@ -27,23 +27,23 @@ transporter.verify((err, success) => {
 
 app.post("/send", function (req, res) {
     let mailOptions = {
-    to: `${req.body.mailerState.email}`,
-    from: process.env.EMAIL,
-    subject: `Message from: ${req.body.mailerState.email}`,
-    text: `${req.body.mailerState.message}`,
-};
+        to: `${req.body.mailerState.email}`,
+        from: process.env.EMAIL,
+        subject: `Message from: ${req.body.mailerState.name}`,
+        text: `${req.body.mailerState.message}`,
+    };
 
-transporter.sendMail(mailOptions, function (err, data) {
-    if (err) {
-        res.json({
-        status: "fail",
-        });
-    } else {
-        console.log("== Message Sent ==");
-        res.json({
-        status: "success",
-        });
-    }
+    transporter.sendMail(mailOptions, function (err, data) {
+        if (err) {
+            res.json({
+            status: "fail",
+            });
+        } else {
+            console.log("== Message Sent ==");
+            res.json({
+            status: "success",
+            });
+        }
     });
 });
 
