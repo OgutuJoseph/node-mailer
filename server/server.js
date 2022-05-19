@@ -21,19 +21,22 @@ transporter.verify((err, success) => {
         : console.log(`=== Server is ready to take messages: ${success} ===`);
 });
 
-let mailOptions = {
-    from: process.env.EMAIL,
-    to: "onyango.joseph@yahoo.com",
-    subject: "Nodemailer API",
-    text: "Hi from your nodemailer API",
-};
+app.post("/send", function (req, res) {
+    let mailOptions = {
+        from: process.env.EMAIL,
+        to: "onyango.joseph@yahoo.com",
+        subject: "Received",
+        text: "Hi from your nodemailer API",
+    };
 
-transporter.sendMail(mailOptions, function (err, data) {
-    if (err) {
-        console.log("Error " + err);
-    } else {
-        console.log("Email sent successfully");
-    }
+    transporter.sendMail(mailOptions, function (err, data) {
+        if (err) {
+            console.log("Error " + err);
+        } else {
+            console.log("Email sent successfully");
+            res.json({ status: "Email sent" });
+        }
+    });
 });
 
 const port = 3001;
