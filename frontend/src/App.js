@@ -27,6 +27,15 @@ function App() {
       body: JSON.stringify({ mailerState }),
     })
       .then((res) => res.json())
+      .then(async (res) => {
+        const resData = await res;
+        console.log(resData);
+        if (resData.status === "success") {
+          alert("Message Sent");
+        } else if (resData.status === "fail") {
+          alert("Message failed to send");
+        }
+      })
       .then(() => {
         setMailerState({
           email: "",
