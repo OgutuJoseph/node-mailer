@@ -26,29 +26,33 @@ transporter.verify((err, success) => {
 });
 
 app.post("/send", function (req, res) {
+    const data = req.body.values;
+    console.log('dataa: ', data);
+    const reference = data.reference;
+    const customer_name = data.customer_name;
+    const customer_email = data.customer_email;
+    const description = data.description;
+    const invoice_date = data.invoice_date;
+    const invoiceData = data.invoiceData;
     let mailOptions = {
-        to: `${req.body.mailerState.email}`,
+        to: `${customer_email}`,
         from: process.env.EMAIL,
-        subject: `Message from: ${req.body.mailerState.name}`,
-        text: ` Hi Mr. ${req.body.mailerState.name}, here is your invoice for the Order Ref #: ${req.body.mailerState.reference}.
+        subject: `Invoice for: Order Ref # ${reference}`,
+        text: ` 
+        Hi Mr. ${customer_name}, here is your invoice for the Order Ref #: ${reference}.
 
         Customer Details:
-        Customer: ${req.body.mailerState.name}
-        Address: ${req.body.mailerState.address}
-        Phone: ${req.body.mailerState.phone}
-        Email: ${req.body.mailerState.email}
+        Customer: ${customer_name}
+        Email: ${customer_email}
 
         Invoice:
-        Order Ref #: ${req.body.mailerState.reference}
-        Amount Due: ${req.body.mailerState.amount_due}
-        Invoice Date: ${req.body.mailerState.invoice_date}
-        Due Date: ${req.body.mailerState.due_date}
+        Order Ref #: ${reference}
+        invoice Date: ${invoice_date}
+        Description: ${description}
+        
 
-        For Items:
-        Item: ${req.body.mailerState.item}
-        Price: ${req.body.mailerState.price}
-        Quantity: ${req.body.mailerState.quantity}
-        Total: ${req.body.mailerState.total_price}
+        // For Items:
+        <-- TBD -->
         
         `,
     };
