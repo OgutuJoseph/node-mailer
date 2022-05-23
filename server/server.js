@@ -27,7 +27,6 @@ transporter.verify((err, success) => {
 
 app.post("/send", function (req, res) {
     const data = req.body.values;
-    console.log('dataa: ', data);
     const reference = data.reference;
     const customer_name = data.customer_name;
     const customer_email = data.customer_email;
@@ -55,6 +54,11 @@ app.post("/send", function (req, res) {
         <-- TBD -->
         
         `,
+        attachments: [{
+            filename: 'invoice.pdf',
+            path:  __dirname + './invoice.pdf',
+            contentType: 'application/pdf; charset=ISO-8859-1'
+        }]
     };
 
     transporter.sendMail(mailOptions, function (err, data) {
