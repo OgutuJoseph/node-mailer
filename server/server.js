@@ -27,12 +27,8 @@ transporter.verify((err, success) => {
 
 app.post("/send", function (req, res) {
     const data = req.body.values;
-    const reference = data.reference;
-    const customer_name = data.customer_name;
-    const customer_email = data.customer_email;
-    const description = data.description;
-    const invoice_date = data.invoice_date;
-    const invoiceData = data.invoiceData;
+    const { reference, customer_name, customer_email, description, invoice_date, invoiceData } = data;
+    
     let mailOptions = {
         to: `${customer_email}`,
         from: process.env.EMAIL,
