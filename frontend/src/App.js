@@ -6,8 +6,9 @@ import { DialogActions, TextField, Button, Dialog, DialogContent, CircularProgre
 function App() {
 
   const [userInput, setUser] = useState({
-    email: '',
-    subject: ''
+    customer_email: '',
+    customer_name: '',
+    reference: ''
 })
 const [file, setFile] = useState(null);
 
