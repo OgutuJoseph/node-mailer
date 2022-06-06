@@ -1,4 +1,5 @@
 const express = require("express");
+const multer = require('multer');
 const nodemailer = require("nodemailer");
 const app = express();
 const cors = require("cors");
@@ -25,7 +26,75 @@ transporter.verify((err, success) => {
     : console.log(`=== Server is ready to take messages: ${success} ===`);
 });
 
-app.post("/send", function (req, res) {
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/invoices')
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname)
+    }
+});
+
+const upload = multer({storage}).single('file');
+
+app.post('/send', (req, res) => {
+    upload(req, res, (err) => {
+
+        // const emailto = req.body.email;
+        // const emailsubject = req.body.subject;
+
+        // console.log('attachmentFile: ', attachmentFile);
+        // console.log('email: ', emailto);
+        // console.log('subject: ', emailsubject);        
+        
+        
+        const attachmentFile = req.file;
+
+        const reference = req.body.reference;
+        const customer_name = req.body.customer_names;
+        const customer_email = req.body.customer_email;
+        
+        let mailOptions = {
+            to: `${customer_email}`,
+            from: process.env.EMAIL,
+            subject: `Invoice for: Order Ref # ${reference}`,
+            text: ` 
+            Hi Mr. ${customer_name}, here is your invoice for the Order Ref #: ${reference}.
+        
+            Invoice:
+            Order Ref #: ${reference}
+            Find Attached the invoice for your payment planning.
+            
+            `,
+            attachments: [{
+                filename: `${attachmentFile.filename}`,
+                path: `${attachmentFile.path}`,
+                contentType: `${attachmentFile.mimetype}`
+            }]
+        };
+
+        transporter.sendMail(mailOptions, function (err, data) {
+            if (err) {
+                res.json({
+                status: "fail",
+                });
+            } else {
+                console.log("== Message Sent ==");
+                res.json({
+                status: "success",
+                });
+            }
+        });
+
+        if (err) {
+            return res.status(500).json(err)
+        }
+
+        return res.status(200).send(req.file)
+    })
+});
+
+app.post("/send2", function (req, res) {
     const data = req.body.values;
     const reference = data.reference;
     const customer_name = data.customer_name;
@@ -55,9 +124,9 @@ app.post("/send", function (req, res) {
         
         `,
         attachments: [{
-            filename: 'invoice.pdf',
-            path:  __dirname + './invoice.pdf',
-            contentType: 'application/pdf; charset=ISO-8859-1'
+            filename: `${attachmentFile.filename}`,
+            path: `${attachmentFile.path}`,
+            contentType: `${attachmentFile.mimetype}`
         }]
     };
 
